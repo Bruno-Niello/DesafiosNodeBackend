@@ -23,3 +23,4 @@ const server = http.createServer((peticion, respuesta)=>{
 const connectedServer = server.listen(8080, ()=>{
     console.log(`Server http escuchando en el puerto ${connectedServer.address().port}`)
 })
+

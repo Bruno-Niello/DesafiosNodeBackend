@@ -3,50 +3,45 @@ const fs = require('fs');
 class Contenedor {
     constructor(archivo){
         this.archivo = archivo;
-        this.id = 0;
-        this.name = [];
     }
+
     //guardo un objeto nuevo y escribo el archivo de no existir
     async save(obj){
 
-        this.id++
-        obj.id = this.id
+        let id = 0;
+        let objeto;
+        let array = [];
 
         try {
 
-            this.name.push(obj);
-            
-            if(this.id == 1){
-                fs.writeFile(this.archivo,JSON.stringify(this.name, null, 2))
-                return (this.id)
-            } 
-            // const productos = await this.getAll();
+            const productos = await this.getAll();
 
-            // if(productos) {
-            //     let arrayFiltrado = productos.reduce((acc, obj)=>{
-            //         if(!acc.includes(obj)){
-            //             acc.push(obj);
-            //         }
-            //         return acc;
-            //     },[])
-            //     // id = 1 + parseInt(productos.length);
-            //     const newObjeto = {...obj, id: id};
-            //     array.push(...productos, newObjeto);  
-            //     objeto = JSON.stringify(array, null, 2);
-            // } else { 
-            //     id = 1;
-            //     const newObjeto = {...obj, id: id};
-            //     array.push(newObjeto); 
-            //     objeto = JSON.stringify(array, null, 2);
-            // }
+            if(productos){
 
-            // await fs.promises.writeFile(this.archivo, objeto, (error)=>{
-            //     if(error) {
-            //         throw new Error('error de escritura')
-            //     }
-            //     console.log('escritura exitosa')
-            //     })
-            // return (objeto.id)
+                const arrayFiltrado = productos.map(item => item.title);
+                const comprobacion = arrayFiltrado.includes(obj.title);
+
+                if(comprobacion === false) {
+                
+                    id = 1 + parseInt(productos.length);
+                    const newObjeto = {...obj, id: id};
+                    array.push(...productos, newObjeto);  
+                    objeto = JSON.stringify(array, null, 2);
+                }
+            } else { 
+                id = 1;
+                const newObjeto = {...obj, id: id};
+                array.push(newObjeto); 
+                objeto = JSON.stringify(array, null, 2);
+            }
+
+            await fs.promises.writeFile(this.archivo, objeto, (error)=>{
+                if(error) {
+                    throw new Error('error de escritura')
+                }
+                console.log('escritura exitosa')
+                })
+            return (objeto.id)
 
         } catch (error) {
             console.error(error);
@@ -141,6 +136,7 @@ const prueba = async () => {
 
     await productos.save(productosNuevos1);
     await productos.save(productosNuevos2);
+    await productos.save(productosNuevos3);
     await productos.save(productosNuevos3);
     
     //borra todos los archivos // ejecutar solo cuando se desee borrar todo
