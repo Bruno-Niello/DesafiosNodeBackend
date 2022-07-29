@@ -1,5 +1,7 @@
 const fs = require('fs'); 
 
+// const { promises: fs } = require('fs');
+
 class Contenedor {
     constructor(archivo){
         this.archivo = archivo;
@@ -27,21 +29,29 @@ class Contenedor {
                     const newObjeto = {...obj, id: id};
                     array.push(...productos, newObjeto);  
                     objeto = JSON.stringify(array, null, 2);
+
+                    await fs.promises.writeFile(this.archivo, objeto, (error)=>{
+                        if(error) {
+                            throw new Error('error de escritura')
+                        }
+                        console.log('escritura exitosa')
+                        })
+                    return (objeto.id)
                 }
             } else { 
                 id = 1;
                 const newObjeto = {...obj, id: id};
                 array.push(newObjeto); 
                 objeto = JSON.stringify(array, null, 2);
-            }
 
-            await fs.promises.writeFile(this.archivo, objeto, (error)=>{
-                if(error) {
-                    throw new Error('error de escritura')
-                }
-                console.log('escritura exitosa')
-                })
-            return (objeto.id)
+                await fs.promises.writeFile(this.archivo, objeto, (error)=>{
+                    if(error) {
+                        throw new Error('error de escritura')
+                    }
+                    console.log('escritura exitosa')
+                    })
+                return (objeto.id)
+            }
 
         } catch (error) {
             console.error(error);
@@ -115,18 +125,22 @@ const prueba = async () => {
             title: 'pipa dunhill',
             price: '20000',
             thumbnail: 'https://firebasestorage.googleapis.com/v0/b/mefe-pipas.appspot.com/o/pipa-pe01.jpg?alt=media&token=3a1addb3-192a-46c8-94b8-2a1a0560c3b9' 
-            }
-
+    }
     let productosNuevos2 = {
             title: 'pipa peterson',
             price: '15000',
             thumbnail: 'https://firebasestorage.googleapis.com/v0/b/mefe-pipas.appspot.com/o/pipa-pe01.jpg?alt=media&token=3a1addb3-192a-46c8-94b8-2a1a0560c3b9' 
-            }
+    }
     let productosNuevos3 = {
         title: 'pipa mefe',
         price: '20000',
         thumbnail: 'https://firebasestorage.googleapis.com/v0/b/mefe-pipas.appspot.com/o/pipa-pe01.jpg?alt=media&token=3a1addb3-192a-46c8-94b8-2a1a0560c3b9' 
-        }
+    }
+    let productosNuevos5 = {
+        title: 'pipa mefistofeles',
+        price: '20000',
+        thumbnail: 'https://firebasestorage.googleapis.com/v0/b/mefe-pipas.appspot.com/o/pipa-pe01.jpg?alt=media&token=3a1addb3-192a-46c8-94b8-2a1a0560c3b9' 
+    }
 
     //traigo todos los productos a la consola
     let todosLosProductos = await productos.getAll();
@@ -138,6 +152,7 @@ const prueba = async () => {
     await productos.save(productosNuevos2);
     await productos.save(productosNuevos3);
     await productos.save(productosNuevos3);
+    await productos.save(productosNuevos5);
     
     //borra todos los archivos // ejecutar solo cuando se desee borrar todo
 
