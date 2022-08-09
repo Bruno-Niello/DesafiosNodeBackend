@@ -1,18 +1,18 @@
 const express = require("express");
-const routerProductos = require("./routes/Rutas.js");
+const routerProductos = require("./routes/productos.js");
 const app = express();
 const PORT = 8080;
 
 /* middlewares */ 
-app.use(express.json());
-app.use(express.text());
 app.use("/api", routerProductos)
 
 /* home desafio */
 app.get('/', (req, res) => {
-    res.send('<h1 style="color:blue;">Desafio Express! acceda a: </h1> <ul><li>/api/productos</li><li>/api/productos/*id*</li><li></li></ul></h1>')
+    res.send('<h1 style="color:blue;">Desafio Express! acceda a: </h1> <ul><li>/api/productos</li><li>/api/productos/*id*</li><li>/index.html para acceder al formulario de carga de objetos!</li></ul></h1>')
 });
 
+/* HTML */
+app.use(express.static('public'))
 
 
 /* server listen */
