@@ -1,0 +1,18 @@
+<h1>Tabla de productos:</h1>
+
+    <div>
+        <table>
+            <tr>
+                <th>Nombre</th>
+                <th>Precio</th>
+                <th>Foto</th>
+            </tr>
+            <% for (const obj of data) { %>
+            <tr>
+                <td><%=obj.name%></td>
+                <td><%=obj.price%></td>
+                <td><%=obj.thumbnail%></td>
+            </tr>
+            <% }; %>
+        </table>
+    </div>
