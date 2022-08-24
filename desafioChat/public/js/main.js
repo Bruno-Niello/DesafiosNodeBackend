@@ -1,5 +1,4 @@
 const socket = io.connect();
-
 //------------------------------------------------------------------------------------
 
 //form
@@ -41,34 +40,37 @@ const inputMensaje = document.getElementById('inputMensaje')
 const btnEnviar = document.getElementById('btnEnviar')
 
 const formPublicarMensaje = document.getElementById('formPublicarMensaje')
-formPublicarMensaje.addEventListener('submit', e => {
-    e.preventDefault()
+formPublicarMensaje.addEventListener('submit', () => {
+
     //Armar el objeto de mensaje y luego emitir mensaje al evento nuevoMensaje con sockets
     const text = inputMensaje.value;
     const autor = inputUsername.value;
     const date = Date.now();
-    const fecha = date.toLocaleString();
+    const newDate = new Date(date);
+    const fecha = newDate.toLocaleString();
     const mensaje = {
         mensaje: text, 
         autor: autor, 
         fecha: fecha
     }
     socket.emit('nuevoMensaje', mensaje);
+    
     formPublicarMensaje.reset()
     inputMensaje.focus()
 })
 
-socket.on('mensajes', mensajes => {
-    console.log(mensajes);
-    makeHtmlList(mensajes);
+socket.on('mensajes', async data => {
+    console.log(data)
+    const info = makeHtmlList(data);
+    const div = document.getElementById('mensajes');
+    div.innerHTML = await info;
 })
 
-function makeHtmlList(mensajes) {
-    console.log(mensajes)
+const makeHtmlList = async (mensajes) => {
     const html = mensajes.map((el) => {
-        return(`<div>${el.autor}${el.fecha}:${el.mensaje}</div>`)
+        return(`<div><span class="autor">${el.autor}</span> <span class="fecha">${el.fecha}:</span>  <span class="mensaje">${el.mensaje}</span></div>`)
     }).join(" ");
-    document.getElementById('mensajes').innerHTML = html;
+    return html
 }
 
 inputUsername.addEventListener('input', () => {

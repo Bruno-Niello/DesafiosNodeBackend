@@ -11,22 +11,20 @@ const app = express();
 const httpServer = new HttpServer(app);
 const io = new Socket(httpServer);
 const memoria = new ContenedorMemoria();
-const archivo = new ContenedorArchivo('./mensajes.txt');
-
-async function mefe() {
-    let mefardo = {autor: "brunencio", mensaje: "holanda que acelga"};
-    await archivo.guardar(mefardo)
-}
-mefe();
+const archivo = new ContenedorArchivo('../mensajes.txt');
 
 app.use(express.static('../public'));
 
 app.get('/', (req, res) => {
     res.sendFile('index.html', { root: __dirname });
-    res.render('tabla.productos.hbs')
 })
+
 //--------------------------------------------
 // configuro el socket
+
+const guardarTxt = async (obj) => {
+    await archivo.guardar(obj)
+}
 
 io.on('connection', async socket => {
     //tabla de productos
@@ -36,15 +34,21 @@ io.on('connection', async socket => {
     });
     const todosProductos = memoria.listarAll();
     socket.emit('productos', todosProductos);
+
     //chat global
-    const todosMensajes = await archivo.listarAll();
     
-    socket.on('nuevoMensaje', data => {
-        io.sockets.emit('mensajes', todosMensajes);
-    })
-    socket.emit('mensajes', todosMensajes);
+    const mensajes = await archivo.listarAll()
+    console.log(mensajes)
+    socket.emit('mensajes', mensajes);
+
+    socket.on('nuevoMensaje', async (data) => {
+        await guardarTxt(data)
+        io.sockets.emit('mensajes', mensajes);
+    });
+
     
 });
+
 //--------------------------------------------
 // agrego middlewares
 
