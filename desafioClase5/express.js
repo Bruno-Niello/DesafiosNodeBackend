@@ -1,30 +1,30 @@
 
-// back8080
-// front4040
-//punto de entrada -> endpoint, servicio
+// // back8080
+// // front4040
+// //punto de entrada -> endpoint, servicio
 
-const express = require('express');
+// const express = require('express');
 
-const app = express();
+// const app = express();
 
-let visitas = 0
+// let visitas = 0
 
-app.get('/', (req, res) => {
-    res.send('<h1 style="color:blue;">Hola mundo</h1>')
-})
+// app.get('/', (req, res) => {
+//     res.send('<h1 style="color:blue;">Hola mundo</h1>')
+// })
 
-app.get('/visitas', (req, res) => {
-    visitas += 1
-    res.send(`La cantidad de visitas es : ${visitas}`)
-})
+// app.get('/visitas', (req, res) => {
+//     visitas += 1
+//     res.send(`La cantidad de visitas es : ${visitas}`)
+// })
 
-app.get('/fyh', (req, res) => {
-    const date = new Date
-    res.send(date.toLocaleString())
-})
+// app.get('/fyh', (req, res) => {
+//     const date = new Date
+//     res.send(date.toLocaleString())
+// })
 
-const server = app.listen(8080, () => {
-    console.log(`Servidor http escuchando en el puerto ${server.address().port}`)
-})
+// const server = app.listen(8080, () => {
+//     console.log(`Servidor http escuchando en el puerto ${server.address().port}`)
+// })
 
-server.on('error', error => console.log(`Error en servidor ${error}`));
+// server.on('error', error => console.log(`Error en servidor ${error}`));

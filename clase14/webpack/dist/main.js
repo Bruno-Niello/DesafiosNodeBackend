@@ -1,0 +1,1 @@
+console.log(9),console.log(suma(3,7)),console.log(suma(2,3));
