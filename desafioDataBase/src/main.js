@@ -2,9 +2,6 @@ import express from 'express';
 import { Server as HttpServer } from 'http';
 import { Server as Socket } from 'socket.io';
 
-
-import ContenedorMemoria from '../contenedores/ContenedorMemoria.js';
-import ContenedorArchivo from '../contenedores/ContenedorArchivo.js';
 import ContenedorSQL from '../contenedores/ContenedorSQL.js';
 import config from './config.js';
 
@@ -33,27 +30,30 @@ app.get('/', (req, res) => {
 //     await archivo.guardar(obj)
 // }
 
-io.on('connection', async socket => {
-    //tabla de productos
-    socket.on('producto', async data => {
-        await productosApi.guardar(data);
+io.on("connection", async (socket) => {
+    const productos = await productosApi.listarAll();
+    const mensajes = await mensajesApi.listarAll();
+  
+    socket.emit("mensajes", mensajes);
+    socket.on("nuevoMensaje", async (x) => {
+      let horaActual = new Date().getHours();
+      let minActual = new Date().getMinutes();
+      x.hora = horaActual + ":" + minActual;
+      mensajes.push(x);
+      await mensajesApi.guardar(x);
+      io.sockets.emit("mensajes", mensajes);
+      await mensajesApi.desconectar();
     });
-    const todosProductos = await productosApi.listarAll();
-    socket.emit('productos', todosProductos);
-
-    //chat global
-    
-    const mensajes = await mensajesApi.listarAll()
-    socket.emit('mensajes', mensajes);
-
-    socket.on('nuevoMensaje', async (data) => {
-        await mensajesApi.guardar(data)
-        io.sockets.emit('mensajes', mensajes);
+  
+    //productos
+    socket.emit("productos", productos);
+    socket.on("new-producto", async (producto) => {
+      productos.push(producto);
+      await productosApi.guardar(producto);
+      io.sockets.emit("productos", productos);
+      await productosApi.desconectar();
     });
-
-    
-});
-
+  });
 //--------------------------------------------
 // agrego middlewares
 
