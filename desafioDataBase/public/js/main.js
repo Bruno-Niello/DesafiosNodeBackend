@@ -10,7 +10,7 @@ formAgregarProducto.addEventListener('submit', e => {
         price: formAgregarProducto[1].value,
         thumbnail: formAgregarProducto[2].value
     }
-    socket.emit('update', producto);
+    socket.emit('new-producto', producto);
     formAgregarProducto.reset()
 })
 
@@ -41,15 +41,15 @@ formPublicarMensaje.addEventListener('submit', e => {
     e.preventDefault()
 
     const mensaje = { autor: inputUsername.value, texto: inputMensaje.value }
-    socket.emit('nuevoMensaje', mensaje);
+    socket.emit('new-message', mensaje);
     formPublicarMensaje.reset()
     inputMensaje.focus()
 })
 
-socket.on('mensajes', mensajes => {
+socket.on('messages', mensajes => {
     console.log(mensajes);
     const html = makeHtmlList(mensajes)
-    document.getElementById('mensajes').innerHTML = html;
+    document.getElementById('messages').innerHTML = html;
 })
 
 function makeHtmlList(mensajes) {
@@ -57,7 +57,7 @@ function makeHtmlList(mensajes) {
         return (`
             <div>
                 <b style="color:blue;">${mensaje.autor}</b>
-                [<span style="color:brown;">${mensaje.fyh}</span>] :
+                [<span style="color:brown;">${mensaje.hora}</span>] :
                 <i style="color:green;">${mensaje.texto}</i>
             </div>
         `)
