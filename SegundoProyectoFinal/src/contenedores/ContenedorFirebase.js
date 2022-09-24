@@ -1,3 +1,4 @@
+import { query } from "express";
 import admin from "firebase-admin"
 import config from '../config.js'
 
@@ -8,37 +9,87 @@ admin.initializeApp({
 const db = admin.firestore();
 
 class ContenedorFirebase {
+  constructor(nombreColeccion) {
+    this.coleccion = db.collection(nombreColeccion);
+    this.id = 1;
+  }
 
-    constructor(nombreColeccion) {
-        this.coleccion = db.collection(nombreColeccion)
+  async listar(id) {
+    try {
+      const doc = this.coleccion.doc(`${id}`);
+      const object = await doc.get();
+      const response = object.data();
+      console.log(response);
+      return response;
+    } catch (error) {
+      console.log(error);
     }
+  }
 
-    async listar(id) {
-        
+  async listarAll() {
+    try {
+      const querySnapshot = await this.coleccion.get();
+        let docs = querySnapshot.docs;
+        console.log(docs);
+      return docs;
+    } catch (error) {
+      console.log(error);
     }
+  }
 
-    async listarAll() {
-        
-    }
+  async guardar(nuevoElem) {
+    try {
+      const objects = await this.listarAll();
+      const lastElement = objects[objects.length - 1];
 
-    async guardar(nuevoElem) {
-        
-    }
+      const lastId = parseInt(lastElement.id) + 1;
 
-    async actualizar(nuevoElem) {
-        
-    }
+      let doc = this.coleccion.doc(`${lastId}`);
 
-    async borrar(id) {
-        
+      const object = {
+        ...nuevoElem,
+        date: new Date().toLocaleString(),
+        id: parseInt(lastId),
+      };
+      
+      await doc.create(object);
+    } catch (error) {
+      console.log(error);
     }
+  }
 
-    async borrarAll() {
-        
+  async actualizar(nuevoElem, id) {
+    try {
+      const doc = this.coleccion.doc(`${id}`);
+      const object = await doc.update({ ...nuevoElem });
+      console.log(object);
+      return object;
+    } catch (error) {
+      console.log(error);
     }
+  }
 
-    async desconectar() {
+  async borrar(id) {
+    try {
+      const doc = this.coleccion.doc(`${id}`);
+      const object = await doc.delete();
+      return object;
+    } catch (error) {
+      console.log(error);
     }
+  }
+
+  async borrarAll() {
+    try {
+      const doc = this.coleccion.doc();
+      const object = await doc.delete();
+      return object;
+    } catch (error) {
+      console.log(error);
+    }
+  }
+
+  async desconectar() {}
 }
 
 export default ContenedorFirebase
