@@ -1,0 +1,23 @@
+// Configuraciones de la DB: 
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+// Tablas / Modelos:
+model User {
+  id    Int     @id @default(autoincrement())
+  email String  @unique
+  name  String?
+}
+
+model Productos {
+  id    Int    @id @default(autoincrement())
+  tipo  String
+  talle String
+  color String
+}
